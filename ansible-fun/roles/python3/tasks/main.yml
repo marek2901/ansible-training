@@ -1,0 +1,29 @@
+---
+- name: yum
+  yum: name={{item}} state=latest
+  become: true
+  become_user: root
+  with_items: "{{ python_yum }}"
+
+- name: unarchive
+  unarchive:
+    src: "{{ python_url }}"
+    dest: "{{ python_tmp }}"
+    remote_src: True
+  register: reg
+
+- name: make
+  become: yes
+  become_user: root
+  shell: cd "{{ python_dir }}" && ./configure --prefix=/usr/local/python && make && make install
+
+- name: Links files to local bin
+  become: yes
+  become_user: root
+  file:
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    state: link
+  with_items:
+   - { src: '/usr/local/python/bin/python3', dest: '/usr/local/bin/python3' }
+   - { src: '/usr/local/python/bin/pip3'   , dest: '/usr/local/bin/pip3'    }

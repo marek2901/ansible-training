@@ -1,0 +1,6 @@
+---
+# This one makes a deps update
+- name: Upgrade deps
+  become: yes
+  become_user: root
+  yum: name=* state=latest

@@ -1,0 +1,17 @@
+---
+# This playbook does the great things
+
+- name: update deps
+  hosts: all
+  remote_user: root
+  roles:
+    - updatedeps
+- name: install common packages
+  hosts: all
+  remote_user: root
+  roles:
+    - commoninstall
+- name: install python 3
+  hosts: all
+  roles:
+    - python3
