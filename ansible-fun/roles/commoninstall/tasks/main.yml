@@ -8,6 +8,7 @@
    - ruby
    - vim
    - git
+   - tmux
 - name: Download vimrc
   become: no
   get_url:
