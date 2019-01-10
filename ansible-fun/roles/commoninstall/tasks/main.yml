@@ -1,16 +1,16 @@
 ---
 # This one makes a deps update
 - name: Install common dependencies
-  become: yes
-  become_user: root
-  yum: name={{ item }} state=latest
-  with_items:
-   - ruby
-   - vim
-   - git
-   - tmux
+  sudo: true
+  yum:
+    name:
+      - ruby
+      - vim
+      - git
+      - tmux
+    state: latest
+
 - name: Download vimrc
-  become: no
   get_url:
     url: https://raw.githubusercontent.com/marek2901/config_files/master/.vimrc
     dest: ~/
