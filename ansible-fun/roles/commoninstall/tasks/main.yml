@@ -8,6 +8,8 @@
       - vim
       - git
       - tmux
+      - gcc
+      - wget
     state: latest
 
 - name: Download vimrc

@@ -1,0 +1,53 @@
+---
+- name: pgdg and epel repos
+  sudo: true
+  yum:
+    name:
+      - https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-centos96-9.6-3.noarch.rpm
+      - epel-release
+    state: present
+
+- name: install postgresql
+  sudo: true
+  yum:
+    name:
+      - postgresql96
+      - postgresql96-server
+      - postgresql96-libs
+      - postgresql96-contrib
+      - postgresql96-devel
+    update_cache: true
+
+- name: Creates data dir
+  file:
+    path: /var/lib/postgres/data
+    state: directory
+    owner: postgres
+    group: postgres
+    mode: 0700
+
+- name: Ensure PostgreSQL database is initialized.
+  command: "/usr/pgsql-9.6/bin/initdb -D '/var/lib/postgres/data'"
+  become: true
+  become_user: postgres
+
+# TODO refactor
+- name: Ensure the PostgreSQL service is running
+  command: "/usr/pgsql-9.6/bin/pg_ctl -D /var/lib/postgres/data -l /tmp/pg-logfile start"
+  become: true
+  become_user: postgres
+
+- name: install postgis
+  sudo: true
+  yum:
+    name:
+      - postgis2_96
+      - postgis2_96-client
+      - ogr_fdw96
+      - pgrouting_96
+    update_cache: true
+
+- name: enable postgis
+  become: true
+  become_user: postgres
+  command: psql -c 'CREATE EXTENSION postgis; CREATE EXTENSION postgis_topology; CREATE EXTENSION ogr_fdw;'
